@@ -1,0 +1,109 @@
+[settings]
+lockfile = true
+env_shell_expand = true
+
+[tools]
+bun = "1.4.2"
+cmake = "latest"
+git-lfs = "latest"
+node = "22.22.0"
+python = "3.14"
+# Keep this version aligned with src/tuffite/rust-toolchain.toml.
+rust = "1.91.0"
+sccache = "latest"
+
+[env]
+# depot_tools
+_.path = ["{{config_root}}/depot_tools"]
+DEPOT_TOOLS_UPDATE = "0"
+PYTHONDONTWRITEBYTECODE = "1"
+DEPOT_TOOLS_WIN_TOOLCHAIN = "0"
+NINJA_STATUS = "[%f/%t %r %e] "
+vs2026_install = "C:/Program Files (x86)/Microsoft Visual Studio/18/BuildTools"
+# sccache
+SCCACHE_DIR = "${SCCACHE_DIR:-{{config_root}}/.sccache}"
+SCCACHE_CACHE_SIZE = "${SCCACHE_CACHE_SIZE:-100G}"
+SCCACHE_IDLE_TIMEOUT = "0"
+# tuffite
+TUFFITE_FRAMEWORK_DIR = "{{config_root}}/src/tuffite"
+
+[tasks.tools]
+description = "Install Mise tools and initialize pinned Depot Tools"
+run = [
+  "mise install",
+  "git submodule sync --recursive",
+  "git submodule update --init --recursive --checkout",
+  '"{{config_root}}/depot_tools/ensure_bootstrap"',
+  "mise run doctor",
+]
+run_windows = [
+  "mise install",
+  "git submodule sync --recursive",
+  "git submodule update --init --recursive --checkout",
+  "gclient --version",
+  "mise run doctor",
+]
+
+[tasks.doctor]
+description = "Check the Chromium checkout and native toolchain"
+run = [
+  "command -v python3 cargo rustc gclient sccache",
+  "python3 --version",
+  "cargo --version",
+  "rustc --version",
+  "gclient --version",
+  "sccache --version",
+  'if [ "$(uname -s)" = Darwin ]; then xcodebuild -version; fi',
+]
+run_windows = [
+  "where.exe python3 cargo rustc gclient sccache",
+  "python3 --version",
+  "cargo --version",
+  "rustc --version",
+  "gclient --version",
+  "sccache --version",
+]
+
+[tasks.setup]
+description = "Sync pinned repositories and Chromium from the outer clone"
+depends = ["tools"]
+run = "gclient sync --no-history"
+
+[tasks.framework]
+description = "Run Framework x.py tasks from the outer checkout"
+dir = "{{config_root}}/src/tuffite"
+run = "python3 x.py"
+
+[tasks.dev]
+description = "Build Framework and launch Playground with HMR"
+dir = "{{config_root}}/src/tuffite"
+run = "python3 x.py build --run"
+
+[tasks.tuff]
+description = "Run the local Tuffite application CLI"
+dir = "{{config_root}}/src/tuffite"
+run = "cargo run --package tuffite --bin tuff --"
+
+[tasks."www:install"]
+description = "Install website dependencies from its Bun lockfile"
+run = "bun install --cwd www --frozen-lockfile"
+
+[tasks.www]
+description = "Run the bilingual documentation site at localhost:5190"
+depends = ["www:install"]
+run = "bun run --cwd www dev"
+
+[tasks."www:check"]
+description = "Check website types and documentation contracts"
+depends = ["www:install"]
+run = "bun run --cwd www check"
+
+[tasks."www:build"]
+description = "Build bilingual documentation, generated references, and Rustdoc"
+depends = ["www:install"]
+run = "bun run --cwd www build"
+
+[tasks.app]
+description = "Run application development tasks"
+dir = "{{config_root}}/ovule"
+run = "mise exec -- python x.py"

@@ -1,0 +1,116 @@
+{
+  "folders": [
+    {
+      "name": "tuffite-in-chromium",
+      "path": "src/tuffite"
+    },
+    {
+      "name": "playground",
+      "path": "src/tuffite/playground"
+    },
+    {
+      "name": "www",
+      "path": "www"
+    },
+    {
+      "name": "src",
+      "path": "src"
+    },
+    {
+      "name": "depot_tools",
+      "path": "depot_tools"
+    },
+    {
+      "name": "root",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "clangd.arguments": [
+      "--compile-commands-dir=${workspaceFolder:tuffite-in-chromium}",
+      "--background-index",
+      "--clang-tidy",
+      "--completion-style=detailed",
+      "--header-insertion=iwyu"
+    ],
+    "rust-analyzer.linkedProjects": [
+      "${workspaceFolder:tuffite-in-chromium}/Cargo.toml"
+    ],
+    "rust-analyzer.files.excludeDirs": [
+      "${workspaceFolder:root}/src",
+      "${workspaceFolder:root}/depot_tools",
+      "${workspaceFolder:tuffite-in-chromium}/target",
+      "${workspaceFolder:tuffite-in-chromium}/target-*"
+    ],
+    "files.watcherExclude": {
+      "**/.git/objects/**": true,
+      "**/.sccache/**": true,
+      "**/node_modules/**": true,
+      "**/out/**": true,
+      "**/target/**": true,
+      "**/target-*/**": true
+    },
+    "search.exclude": {
+      "**/.sccache/**": true,
+      "**/node_modules/**": true,
+      "**/out/**": true,
+      "**/target/**": true,
+      "**/target-*/**": true
+    },
+    "search.followSymlinks": false,
+    "files.associations": {
+      "DEPS": "python"
+    },
+    "cSpell.words": [
+      "rsproxy",
+      "tuffite"
+    ]
+  },
+  "extensions": {
+    "recommendations": [
+      "llvm-vs-code-extensions.vscode-clangd",
+      "rust-lang.rust-analyzer",
+      "ms-python.python",
+      "tamasfe.even-better-toml"
+    ]
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Tuffite: Generate focused clangd database",
+        "type": "shell",
+        "command": "mise",
+        "args": [
+          "exec",
+          "--",
+          "python3",
+          "x.py",
+          "compdb"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:tuffite-in-chromium}"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Tuffite: Generate full Chromium clangd database",
+        "type": "shell",
+        "command": "mise",
+        "args": [
+          "exec",
+          "--",
+          "python3",
+          "x.py",
+          "compdb",
+          "--all"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:tuffite-in-chromium}"
+        },
+        "problemMatcher": []
+      }
+    ]
+  }
+}

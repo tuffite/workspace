@@ -1,0 +1,35 @@
+{
+  "chat.disableAIFeatures": false,
+  "C_Cpp.intelliSenseEngine": "disabled",
+  "clangd.arguments": [
+    "--compile-commands-dir=${workspaceFolder}",
+    "--background-index",
+    "--clang-tidy",
+    "--completion-style=detailed",
+    "--header-insertion=iwyu"
+  ],
+  "cSpell.words": [
+    "absl",
+    "autoninja",
+    "cdylib",
+    "tuffite",
+    "tuffite-abi",
+    "tuffite-macros",
+    "tuffite-runtime",
+    "clippy",
+    "compdb",
+    "Dispatch",
+    "Embedder",
+    "gclient",
+    "libc",
+    "libperfetto",
+    "msvc",
+    "rlib",
+    "rsproxy",
+    "sccache",
+    "ShellAPI",
+    "SSRF",
+    "ulonglong",
+    "webcontents"
+  ]
+}

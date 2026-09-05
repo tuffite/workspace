@@ -1,0 +1,34 @@
+# 
+.DS_Store
+
+# gclient
+.gclient_*
+.cipd/
+.gcs_entries
+_bad_scm/
+/src/
+
+# sccache
+.sccache/
+
+# Rust
+/target/
+/target-*/
+
+# Python tooling
+__pycache__/
+*.pyc
+
+# clangd
+/.cache/
+/compile_commands.json*
+.compile_commands.json.tmp
+
+# Nodejs
+node_modules/
+.pnpm-store/
+*.tsbuildinfo
+
+# Output
+dist*/
+.tmp*/
